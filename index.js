@@ -1,6 +1,6 @@
 "use strict";
 const getWeatherData = require("./data/weather.js");
-const {windDirection} = require('./data/parserWeatherData.js');
+const { windDirection } = require("./data/parserWeatherData.js");
 const { createDate } = require("./data/date");
 const fs = require("fs/promises");
 const TelegramApi = require("node-telegram-bot-api");
@@ -10,40 +10,46 @@ const token = "";
 const bot = new TelegramApi(token, { polling: true });
 module.exports = bot;
 
-const gameOptions = {
-  reply_markup: JSON.stringify({
-    inline_keyboard: [[{ text: "Millitary", callback_data: "millitary" }]],
-  }),
+const startOptons = {
+  reply_markup: {
+    keyboard: [
+      [{ text: "Погода" }],
+      [{ text: "Статистика по втратам ворога" }],
+    ],
+    resize_keyboard: true, // Автоматическое изменение размера кнопок
+    one_time_keyboard: true, // После нажатия кнопки клавиатура исчезает
+  },
 };
 
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
 
-    // bot.sendLocation(chatId, 40.712776, -74.005974);
-
+  // bot.sendLocation(chatId, 40.712776, -74.005974);
   if (msg.location) {
-    try{
+    try {
       const date = new Date();
       const weatherData = await getWeatherData(msg.location);
 
-      bot.sendMessage(chatId,
-`Погода у місті ${weatherData.name}
+      bot.sendMessage(
+        chatId,
+        `Погода у місті ${weatherData.name}
 На ${date.toLocaleTimeString()} ${date.toLocaleDateString()}
-Температура: ${weatherData.main.temp.toFixed(1)} Відчуття як: ${weatherData.main.temp.toFixed(1)}
-${windDirection(weatherData.wind.deg)} вітер зі швидкістю ${weatherData.wind.speed.toFixed()} м/c та поривами до ${weatherData.wind.gust.toFixed()} м/c
+Температура: ${weatherData.main.temp.toFixed(
+          1
+        )} Відчуття як: ${weatherData.main.temp.toFixed(1)}
+${windDirection(
+  weatherData.wind.deg
+)} вітер зі швидкістю ${weatherData.wind.speed.toFixed()} м/c та поривами до ${weatherData.wind.gust.toFixed()} м/c
 Тиск: ${weatherData.main.pressure}
 Відносна вологість повітря: ${weatherData.main.humidity}%
 `
-      )
-
-      }catch(error){
+      );
+    } catch (error) {
       console.log(error);
       throw error;
     }
   }
-
-
 });
 
 bot.onText(/\/millitary/, async (msg, match) => {
@@ -62,18 +68,6 @@ bot.onText(/\/millitary/, async (msg, match) => {
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-
-  // Создаем одну или две кнопки
-  const startOptons = {
-    reply_markup: {
-      keyboard: [
-        [{ text: "Погода" }],
-        [{ text: "Статистика по втратам ворога" }],
-      ],
-      resize_keyboard: true, // Автоматическое изменение размера кнопок
-      one_time_keyboard: true, // После нажатия кнопки клавиатура исчезает
-    },
-  };
 
   // Отправляем сообщение с кнопками
   bot.sendMessage(chatId, "Оберіть дію:", startOptons);
@@ -94,7 +88,7 @@ bot.onText(/^Статистика по втратам ворога/, (msg) => {
         [{ text: "Назад" }],
       ],
       resize_keyboard: true, // Автоматическое изменение размера кнопок
-      one_time_keyboard: true, // После нажатия кнопки клавиатура исчезает
+      one_time_keyboard: false, // После нажатия кнопки клавиатура исчезает
     },
   };
 
@@ -212,14 +206,14 @@ bot.onText(/Погода/, (msg) => {
             request_location: true, // Эта кнопка запросит у пользователя локацию
           },
           {
-            text: 'Ввести назву міста'
+            text: "Ввести назву міста",
           },
         ],
         [
           {
-            text: 'Назад',
+            text: "Назад",
           },
-        ]
+        ],
       ],
       resize_keyboard: true,
       one_time_keyboard: true, // Клавиатура исчезнет после одного использования
@@ -232,7 +226,16 @@ bot.onText(/Погода/, (msg) => {
     getLocationButton
   );
 
-  if (msg.location) {
-    console.log(msg.location);
-  } else console.log("Локации нет");
+  // if (msg.location) {
+  //   console.log(msg.location);
+  // } else console.log("Локации нет");
+});
+
+bot.on("message", async (msg) => {
+  const chatId = msg.chat.id;
+  const text = msg.text;
+
+  if (String(text).startsWith("Назад")) {
+    bot.sendMessage(chatId, "Оберіть дію:", startOptons);
+  }
 });
