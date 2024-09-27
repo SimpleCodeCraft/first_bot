@@ -5,8 +5,10 @@ import dateF from "./data/date.js";
 
 import TelegramApi from "node-telegram-bot-api";
 import getMillitaryData from "./data/millitary.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-const token = "7536210321:AAGRgMtysxYsypiT5jJG0EBoCJ_C87jq0-8";
+const token = process.env.TOKEN;
 const bot = new TelegramApi(token, { polling: true });
 
 
