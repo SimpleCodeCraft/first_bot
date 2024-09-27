@@ -4,6 +4,7 @@
   "description": "test Bot",
   "main": "index.js",
   "scripts": {
+    "vercel build": "npm install",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
