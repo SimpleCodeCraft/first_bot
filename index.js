@@ -1,14 +1,14 @@
 "use strict";
-const getWeatherData = require("./data/weather.js");
-const { windDirection } = require("./data/parserWeatherData.js");
-const { createDate } = require("./data/date");
-const fs = require("fs/promises");
-const TelegramApi = require("node-telegram-bot-api");
-const getMillitaryData = require("./data/millitary.js");
+import getWeatherData from "./data/weather.js";
+import windDirection from "./data/parserWeatherData.js";
+import dateF from "./data/date.js";
 
-const token = "";
+import TelegramApi from "node-telegram-bot-api";
+import getMillitaryData from "./data/millitary.js";
+
+const token = "7536210321:AAGRgMtysxYsypiT5jJG0EBoCJ_C87jq0-8";
 const bot = new TelegramApi(token, { polling: true });
-module.exports = bot;
+
 
 const startOptons = {
   reply_markup: {
@@ -157,7 +157,7 @@ bot.onText(/^По даті/, (msg) => {
 
 bot.onText(/\d{4}.\d{1,2}.\d{1,2}/m, async (msg) => {
   const chatId = msg.chat.id;
-  const date = createDate(msg.text);
+  const date = dateF.createDate(msg.text);
 
   try {
     const millitaryData = await getMillitaryData(date);

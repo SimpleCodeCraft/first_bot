@@ -1,9 +1,9 @@
 "use strict";
 
-const axios = require("axios");
-const { getCurrentDate, getYesterdayDate } = require("./date");
+import axios from "axios";
+import timeF from "./date.js";
 
-module.exports = async function (date) {
+export default async function (date) {
   if(date){
     const url = `https://russianwarship.rip/api/v2/statistics/${date}`;
     try{
@@ -16,19 +16,27 @@ module.exports = async function (date) {
     }
   }
 
-  const url = `https://russianwarship.rip/api/v2/statistics/${getCurrentDate()}`;
-  const url2 = `https://russianwarship.rip/api/v2/statistics/${getYesterdayDate()}`;
+  const url = `https://russianwarship.rip/api/v2/statistics/${timeF.getCurrentDate()}`;
+  const url2 = `https://russianwarship.rip/api/v2/statistics/${timeF.getYesterdayDate()}`;
 
+  
+  let data;
+  
   try {
     const todayData = await axios.get(url);
-    if (todayData) {
-      return todayData.data;
-    } else {
-      const yesterdayData = await axios.get(url2);
-      return yesterdayData.data;
-    }
-  } catch {
-    console.error("Error with axios data:", error);
-    throw error;
+    
+      data = todayData.data;
+  } catch(error) {
+   console.error("Error with axios data:", error);
+//   throw error;
   }
+
+ try {
+   const yesterdayData = await axios.get(url2);
+   data = yesterdayData.data;
+ } catch(error) {
+ console.error("Error with axios data:", error);
+// throw error;
+}
+  return data;
 };

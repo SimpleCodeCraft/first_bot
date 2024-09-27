@@ -1,7 +1,6 @@
 "use strict";
 
-const parseFunctions = {
-  windDirection: function (direction) {
+const parseFunctions = function (direction) {
     if (
       (direction >= 0 && direction < 23) ||
       (direction >= 338 && direction <= 360)
@@ -27,9 +26,9 @@ const parseFunctions = {
       );
       throw error;
     }
-  },
-};
+  }
 
 
-module.exports = parseFunctions;
+
+export default parseFunctions;
 

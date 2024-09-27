@@ -1,0 +1,8 @@
+modules = ["nodejs-22"]
+run = "nodemon index.js"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "nodemon index.js"]
