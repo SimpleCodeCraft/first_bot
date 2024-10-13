@@ -1,18 +1,19 @@
 "use strict";
 
-import axios from "axios";
+import got from "got";
 import timeF from "./date.js";
 
 export default async function (date) {
   if(date){
     const url = `https://russianwarship.rip/api/v2/statistics/${date}`;
     try{
-      const dataForDate = await axios.get(url);
-      return dataForDate.data;
+      const dataForDate = await got(url);
+      return dataForDate.body;
     }
-    catch(error){
-      console.log(error);
-      throw error;
+    catch{
+      throw new RangeError("Помилка\nЗаписи ведуться від 2024-02-25");
+//      console.log("Данни");
+//      throw error;
     }
   }
 
@@ -23,17 +24,17 @@ export default async function (date) {
   let data;
   
   try {
-    const todayData = await axios.get(url);
+    const todayData = await got(url);
     
-      data = todayData.data;
+      data = todayData.body;
   } catch(error) {
-   console.error("Error with axios data:", error);
+   console.error("За сьогоді данних немає");
 //   throw error;
   }
 
  try {
-   const yesterdayData = await axios.get(url2);
-   data = yesterdayData.data;
+   const yesterdayData = await got(url2);
+   data = yesterdayData.body;
  } catch(error) {
  console.error("Error with axios data:", error);
 // throw error;

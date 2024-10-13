@@ -11,7 +11,6 @@ dotenv.config();
 const token = process.env.TOKEN;
 const bot = new TelegramApi(token, { polling: true });
 
-
 const startOptons = {
   reply_markup: {
     keyboard: [
@@ -38,14 +37,14 @@ bot.on("message", async (msg) => {
         `Погода у місті ${weatherData.name}
 На ${date.toLocaleTimeString()} ${date.toLocaleDateString()}
 Температура: ${weatherData.main.temp.toFixed(
-          1
+          1,
         )} Відчуття як: ${weatherData.main.temp.toFixed(1)}
 ${windDirection(
-  weatherData.wind.deg
+  weatherData.wind.deg,
 )} вітер зі швидкістю ${weatherData.wind.speed.toFixed()} м/c та поривами до ${weatherData.wind.gust.toFixed()} м/c
 Тиск: ${weatherData.main.pressure}
 Відносна вологість повітря: ${weatherData.main.humidity}%
-`
+`,
       );
     } catch (error) {
       console.log(error);
@@ -54,19 +53,6 @@ ${windDirection(
   }
 });
 
-bot.onText(/\/millitary/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  const city = match[1];
-
-  try {
-    // Получаем данные погоды
-  } catch (error) {
-    bot.sendMessage(
-      chatId,
-      `Sorry, I couldn\'t fetch data. Try again later.${error}`
-    );
-  }
-});
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
@@ -100,7 +86,7 @@ bot.onText(/^Статистика по втратам ворога/, (msg) => {
 
 bot.onText(/^Загальні втрати/, async (msg) => {
   const chatId = msg.chat.id;
-
+ 
   const millitaryData = await getMillitaryData();
   await bot.sendMessage(
     chatId,
@@ -120,7 +106,7 @@ ${millitaryData.data.day} день війни
 Кораблі/катери: ${millitaryData.data.stats.warships_cutters}
 Автомобільної техніки та автоцистерн: ${millitaryData.data.stats.vehicles_fuel_tanks}
 Спеціальна техніка: ${millitaryData.data.stats.special_military_equip}
-Підводні човни: ${millitaryData.data.stats.submarines}`
+Підводні човни: ${millitaryData.data.stats.submarines}`,
   );
 });
 
@@ -147,7 +133,7 @@ ${millitaryData.data.day} день війни
 Кораблі/катери: ${millitaryData.data.increase.warships_cutters}
 Автомобільної техніки та автоцистерн: ${millitaryData.data.increase.vehicles_fuel_tanks}
 Спеціальна техніка: ${millitaryData.data.increase.special_military_equip}
-Підводні човни: ${millitaryData.data.increase.submarines}`
+Підводні човни: ${millitaryData.data.increase.submarines}`,
   );
 });
 
@@ -161,8 +147,11 @@ bot.onText(/\d{4}.\d{1,2}.\d{1,2}/m, async (msg) => {
   const chatId = msg.chat.id;
   const date = dateF.createDate(msg.text);
 
+  let millitaryData;
   try {
-    const millitaryData = await getMillitaryData(date);
+    
+    millitaryData = await getMillitaryData(date);
+
 
     await bot.sendMessage(
       chatId,
@@ -182,13 +171,14 @@ ${millitaryData.data.day} день війни
 Кораблі/катери: ${millitaryData.data.stats.warships_cutters} (+${millitaryData.data.increase.warships_cutters})
 Автомобільної техніки та автоцистерн: ${millitaryData.data.stats.vehicles_fuel_tanks} (+${millitaryData.data.increase.vehicles_fuel_tanks})
 Спеціальна техніка: ${millitaryData.data.stats.special_military_equip} (+${millitaryData.data.increase.special_military_equip})
-Підводні човни: ${millitaryData.data.stats.submarines} (+${millitaryData.data.increase.submarines})`
+Підводні човни: ${millitaryData.data.stats.submarines} (+${millitaryData.data.increase.submarines})`,
     );
-  } catch (error) {
-    bot.sendMessage(chatId, `Помилка:${error}`);
-    console.log(error);
-    throw error;
-  }
+    
+    } catch (error) {
+      bot.sendMessage(chatId, error);
+      console.log(error);
+    //      throw error;
+    }
 });
 
 bot.onText(/^\d{1,3}\D+/m, async (msg) => {
@@ -225,7 +215,7 @@ bot.onText(/Погода/, (msg) => {
   bot.sendMessage(
     chatId,
     "Потрібно отримати вашу геолокацію",
-    getLocationButton
+    getLocationButton,
   );
 
   // if (msg.location) {

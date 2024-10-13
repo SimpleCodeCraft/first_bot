@@ -1,6 +1,6 @@
 "use strict";
 
-import axios from "axios";
+import got from "got";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -11,7 +11,7 @@ export default async ({ latitude, longitude }) => {
 
   if (latitude && longitude) {
     try {
-      const response = await axios.get(url);
+      const response = await got(url);
       return response.data;
     } catch (error) {
       console.log(error);
